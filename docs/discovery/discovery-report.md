@@ -1,11 +1,11 @@
 
 # Discovery report
 
-## Problem statement
+## 1.Problem statement
 
 A film studio in Los Angeles struggles with unreliable and difficult-to-maintain rendering software, making it hard to identify problems, add new features and consistently produce high-quality images without costly delays and external dependencies.
 
-## Client interview summary
+## 2.Client interview summary
 
 The following is a summary of the client interview, organized by theme. The questions and answers have been reconstructed from my notes, so they may not reflect the exact words used during the discussion.
 
@@ -128,7 +128,7 @@ The interview helped clarify several important needs, but some questions remain 
 - **Open source:** Does the studio have a preferred open-source license or contribution process?
 
 
-## State of the art
+## 3.State of the art
 
 To better understand the existing solutions, I looked at four rendering engines used in 3D production. I focused on their pricing, licensing models and main capabilities, especially since the client mentioned high licensing costs, reliability issues and difficulties maintaining the previous software.
 
@@ -151,7 +151,7 @@ However, these findings do not prove that commercial renderers are unreliable or
 
 
 
-## What is ray tracing?
+## 4.What is ray tracing?
 
 Ray tracing is a rendering technique that creates a 2D image from a 3D scene by simulating how light interacts with objects. It starts with a scene containing objects, materials, light sources and a camera. The renderer sends rays from the camera through the pixels of the image to determine which objects they hit. When a ray hits an object, the renderer calculates the color based on its material and the lighting conditions. It can also send additional rays to calculate shadows, reflections and transparency. This process is repeated for the pixels of the image to produce the final result. Ray tracing can produce realistic images, but it requires a lot of calculations, especially for complex scenes.
 
@@ -161,7 +161,7 @@ Ray tracing is a rendering technique that creates a 2D image from a 3D scene by 
 
 
 
-## What is C++?
+## 5.What is C++?
 
 ### Programming paradigms
 
