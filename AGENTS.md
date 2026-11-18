@@ -1,11 +1,11 @@
 # Project instructions
 
-From the project root:
+From the project root (with GNU Make, including inside the Dev Container):
 
-- Configure: `cmake --preset default`
-- Build: `cmake --build --preset default`
-- Run: `./build/raytracer` (`.\build\raytracer.exe` on Windows)
-- Test: `ctest --preset default`
+- Build: `make build`
+- Run: `make run`
+- Test: `make test`
+- Clean: `make clean`
 
 Architecture decisions are in `docs/adr/`. Read them before changing the
 build, tools, or test setup. Never go against an accepted ADR. To change a

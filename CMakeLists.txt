@@ -16,6 +16,12 @@ add_executable(raytracer
 )
 target_link_libraries(raytracer PRIVATE raytracer_core)
 
+add_custom_target(run
+    COMMAND $<TARGET_FILE:raytracer>
+    DEPENDS raytracer
+    USES_TERMINAL
+)
+
 include(CTest)
 
 if(BUILD_TESTING)
