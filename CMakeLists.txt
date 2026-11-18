@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(raytracer_core
     src/greeting.cpp
+    src/vector.cpp
 )
 target_include_directories(raytracer_core PUBLIC include)
 
@@ -35,9 +36,5 @@ if(BUILD_TESTING)
     )
     FetchContent_MakeAvailable(Catch2)
 
-    add_executable(raytracer_tests
-        tests/greeting_tests.cpp
-    )
-    target_link_libraries(raytracer_tests PRIVATE raytracer_core Catch2::Catch2WithMain)
-    add_test(NAME raytracer_tests COMMAND raytracer_tests)
+    add_subdirectory(tests)
 endif()
