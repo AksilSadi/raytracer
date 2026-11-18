@@ -85,3 +85,12 @@ executable. The existing greeting test is a minimal example:
 Add test cases in `tests/` and production code under `include/` and `src/`.
 The first configure downloads Catch2, so an internet connection is required
 unless the dependency is already available in CMake's build cache.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the Dev Container setup, Make
+commands, TDD workflow, and ADR guidance. GitHub issue and pull request
+templates are in `.github/`; pull requests are checked by the
+[CI workflow](.github/workflows/ci.yml), which uses the Dev Container image.
+The CI decision is recorded in
+[ADR 0005](docs/adr/0005-github-actions-ci.md).

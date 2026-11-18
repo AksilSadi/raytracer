@@ -1,0 +1,25 @@
+name: C++ CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Build development container
+        run: docker build --file .devcontainer/Dockerfile --tag raytracer-devcontainer:ci .
+
+      - name: Build and test in development container
+        run: >-
+          docker run --rm
+          --volume "$GITHUB_WORKSPACE:/workspaces/raytracer"
+          --workdir /workspaces/raytracer
+          raytracer-devcontainer:ci
+          make test
