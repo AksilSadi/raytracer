@@ -49,3 +49,14 @@ TEST_CASE("a vector can be scaled by a number on the left") {
     CHECK(result.y() == -8);
     CHECK(result.z() == 2);
 }
+
+TEST_CASE("the ray equation evaluates origin plus t times direction") {
+    const Vector O(0, 8, 0);
+    const Vector D(3, -4, 0);
+    const double t = 2;
+    const Vector result = O + t * D;
+
+    CHECK(result.x() == 6);
+    CHECK(result.y() == 0);
+    CHECK(result.z() == 0);
+}
