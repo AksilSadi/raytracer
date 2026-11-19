@@ -1,6 +1,7 @@
 #include "vector.h"
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 TEST_CASE("adding vectors adds their coordinates") {
     const Vector first(3, 4, 0);
@@ -92,4 +93,17 @@ TEST_CASE("length includes a non-zero z coordinate") {
     const Vector vector(3, 4, 12);
 
     CHECK(vector.length() == 13);
+}
+
+TEST_CASE("normalised returns a vector in the same direction with length one") {
+    const Vector result = Vector(3, -4, 0).normalised();
+
+    CHECK_THAT(result.x(), Catch::Matchers::WithinAbs(0.6, 1e-9));
+    CHECK_THAT(result.y(), Catch::Matchers::WithinAbs(-0.8, 1e-9));
+    CHECK_THAT(result.z(), Catch::Matchers::WithinAbs(0, 1e-9));
+}
+
+TEST_CASE("normalised vectors have length one") {
+    CHECK_THAT(Vector(3, 4, 12).normalised().length(),
+               Catch::Matchers::WithinAbs(1, 1e-9));
 }
