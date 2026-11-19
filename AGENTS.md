@@ -7,6 +7,8 @@ From the project root (with GNU Make, including inside the Dev Container):
 - Test: `make test`
 - Clean: `make clean`
 
+## Source layout
+
 New classes go in the folder for their concept under `src/`, and their tests
 go in the matching folder under `tests/`. Include project headers by their path
 from `src/`, for example `#include "math/vector.h"`.
