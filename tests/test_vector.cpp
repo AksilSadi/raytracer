@@ -3,14 +3,20 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 
+const double tolerance = 1e-9;
+
+static void requireVectorsEqual(const Vector& actual, const Vector& expected) {
+    CHECK_THAT(actual.x(), Catch::Matchers::WithinAbs(expected.x(), tolerance));
+    CHECK_THAT(actual.y(), Catch::Matchers::WithinAbs(expected.y(), tolerance));
+    CHECK_THAT(actual.z(), Catch::Matchers::WithinAbs(expected.z(), tolerance));
+}
+
 TEST_CASE("adding vectors adds their coordinates") {
     const Vector first(3, 4, 0);
     const Vector second(4, -3, 0);
     const Vector result = first + second;
 
-    CHECK(result.x() == 7);
-    CHECK(result.y() == 1);
-    CHECK(result.z() == 0);
+    requireVectorsEqual(result, Vector(7, 1, 0));
 }
 
 TEST_CASE("adding vectors includes a non-zero z coordinate") {
@@ -18,9 +24,7 @@ TEST_CASE("adding vectors includes a non-zero z coordinate") {
     const Vector second(4, -3, 2);
     const Vector result = first + second;
 
-    CHECK(result.x() == 7);
-    CHECK(result.y() == 1);
-    CHECK(result.z() == 3);
+    requireVectorsEqual(result, Vector(7, 1, 3));
 }
 
 TEST_CASE("subtracting vectors subtracts their coordinates") {
@@ -28,9 +32,7 @@ TEST_CASE("subtracting vectors subtracts their coordinates") {
     const Vector second(1, 1, 0);
     const Vector result = first - second;
 
-    CHECK(result.x() == 3);
-    CHECK(result.y() == 4);
-    CHECK(result.z() == 0);
+    requireVectorsEqual(result, Vector(3, 4, 0));
 }
 
 TEST_CASE("subtracting vectors includes a non-zero z coordinate") {
@@ -38,17 +40,13 @@ TEST_CASE("subtracting vectors includes a non-zero z coordinate") {
     const Vector second(1, 1, 2);
     const Vector result = first - second;
 
-    CHECK(result.x() == 3);
-    CHECK(result.y() == 4);
-    CHECK(result.z() == 4);
+    requireVectorsEqual(result, Vector(3, 4, 4));
 }
 
 TEST_CASE("a vector can be scaled by a number on the left") {
     const Vector result = 2.0 * Vector(3, -4, 1);
 
-    CHECK(result.x() == 6);
-    CHECK(result.y() == -8);
-    CHECK(result.z() == 2);
+    requireVectorsEqual(result, Vector(6, -8, 2));
 }
 
 TEST_CASE("the ray equation evaluates origin plus t times direction") {
@@ -57,9 +55,7 @@ TEST_CASE("the ray equation evaluates origin plus t times direction") {
     const double t = 2;
     const Vector result = O + t * D;
 
-    CHECK(result.x() == 6);
-    CHECK(result.y() == 0);
-    CHECK(result.z() == 0);
+    requireVectorsEqual(result, Vector(6, 0, 0));
 }
 
 TEST_CASE("dot product multiplies and adds coordinates") {
@@ -98,12 +94,10 @@ TEST_CASE("length includes a non-zero z coordinate") {
 TEST_CASE("normalised returns a vector in the same direction with length one") {
     const Vector result = Vector(3, -4, 0).normalised();
 
-    CHECK_THAT(result.x(), Catch::Matchers::WithinAbs(0.6, 1e-9));
-    CHECK_THAT(result.y(), Catch::Matchers::WithinAbs(-0.8, 1e-9));
-    CHECK_THAT(result.z(), Catch::Matchers::WithinAbs(0, 1e-9));
+    requireVectorsEqual(result, Vector(0.6, -0.8, 0));
 }
 
 TEST_CASE("normalised vectors have length one") {
     CHECK_THAT(Vector(3, 4, 12).normalised().length(),
-               Catch::Matchers::WithinAbs(1, 1e-9));
+               Catch::Matchers::WithinAbs(1, tolerance));
 }

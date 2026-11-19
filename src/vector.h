@@ -20,4 +20,4 @@ private:
     double _z;
 };
 
-Vector operator*(double scalar, const Vector& vector);
+Vector operator*(double t, const Vector& vector);
