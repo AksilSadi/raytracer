@@ -21,3 +21,23 @@ TEST_CASE("adding vectors includes a non-zero z coordinate") {
     CHECK(result.y() == 1);
     CHECK(result.z() == 3);
 }
+
+TEST_CASE("subtracting vectors subtracts their coordinates") {
+    const Vector first(4, 5, 0);
+    const Vector second(1, 1, 0);
+    const Vector result = first - second;
+
+    CHECK(result.x() == 3);
+    CHECK(result.y() == 4);
+    CHECK(result.z() == 0);
+}
+
+TEST_CASE("subtracting vectors includes a non-zero z coordinate") {
+    const Vector first(4, 5, 6);
+    const Vector second(1, 1, 2);
+    const Vector result = first - second;
+
+    CHECK(result.x() == 3);
+    CHECK(result.y() == 4);
+    CHECK(result.z() == 4);
+}
