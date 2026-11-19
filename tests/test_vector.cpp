@@ -41,3 +41,11 @@ TEST_CASE("subtracting vectors includes a non-zero z coordinate") {
     CHECK(result.y() == 4);
     CHECK(result.z() == 4);
 }
+
+TEST_CASE("a vector can be scaled by a number on the left") {
+    const Vector result = 2.0 * Vector(3, -4, 1);
+
+    CHECK(result.x() == 6);
+    CHECK(result.y() == -8);
+    CHECK(result.z() == 2);
+}

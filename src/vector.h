@@ -16,3 +16,5 @@ private:
     double _y;
     double _z;
 };
+
+Vector operator*(double scalar, const Vector& vector);
