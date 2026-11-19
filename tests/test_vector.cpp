@@ -60,3 +60,36 @@ TEST_CASE("the ray equation evaluates origin plus t times direction") {
     CHECK(result.y() == 0);
     CHECK(result.z() == 0);
 }
+
+TEST_CASE("dot product multiplies and adds coordinates") {
+    const Vector first(3, 4, 0);
+    const Vector second(4, 3, 0);
+
+    CHECK(first.dot(second) == 24);
+}
+
+TEST_CASE("dot product can be zero") {
+    const Vector first(3, 4, 0);
+    const Vector second(4, -3, 0);
+
+    CHECK(first.dot(second) == 0);
+}
+
+TEST_CASE("dot product includes non-zero z coordinates") {
+    const Vector first(3, 4, 12);
+    const Vector second(4, 3, 1);
+
+    CHECK(first.dot(second) == 36);
+}
+
+TEST_CASE("length is the magnitude of the vector") {
+    const Vector vector(3, -4, 0);
+
+    CHECK(vector.length() == 5);
+}
+
+TEST_CASE("length includes a non-zero z coordinate") {
+    const Vector vector(3, 4, 12);
+
+    CHECK(vector.length() == 13);
+}
