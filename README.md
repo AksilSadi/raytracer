@@ -1,7 +1,7 @@
 # Raytracer
 
-A student C++ project, bootstrapped with a small Hello World app, a
-cross-platform CMake build, and Catch2 tests.
+A student C++ ray tracer project with a cross-platform CMake build and Catch2
+tests.
 
 ## Requirements
 

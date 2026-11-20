@@ -173,7 +173,41 @@ One of the main challenges in C++ is memory management. Unlike languages that us
 
 ### Shaping the domain model
 
-For the ray tracer, I would start by identifying the main concepts of the rendering process, such as Scene, Camera, Ray, Object, Material, Light and Renderer. Each concept would have a clear responsibility. For example, a Ray could represent an origin and a direction, while a Scene could contain the objects and lights needed for rendering. C++ classes and structures could help represent these concepts, and interfaces could allow different types of objects or materials to be supported without changing the entire system. I would also try to keep the mathematical calculations separate from the rendering logic, making the code easier to understand, test and extend. This is only an initial idea of the domain model, which will need to evolve as we better understand the requirements.
+The pinhole spike has established a small, tested domain model:
+
+```mermaid
+flowchart LR
+    Camera -->|creates| Ray
+    Ray -->|input| Trace["trace(ray, sphere)"]
+    Sphere -->|input| Trace
+    Sphere -->|has| Colour
+    Trace -->|returns| Colour
+    Image -. "planned: stores pixel values" .-> Colour
+```
+
+`Camera` creates a `Ray`; `Sphere` holds its geometry and a `Colour`; and the
+free function `trace` currently takes one ray and one sphere, returning the
+sphere's colour on a hit or black otherwise. `Image` is not implemented yet;
+it is expected to store `Colour` values for its pixels.
+
+The spike and stabilisation decisions are recorded here so they can be
+revisited deliberately:
+
+- **Done:** the domain classes fit together; each class has tests; the
+  behind-the-eye intersection bug is fixed; the colour decision is tested in
+  `trace`; classes and tests are organized by concept; the greeting bootstrap
+  has been removed.
+- **Rejected:** extracting the repeated camera ray from each test into another
+  helper. Keeping the coordinates visible makes each test's setup easy to
+  read.
+- **Parked:** return the nearest positive `t` instead of a yes/no hit; support
+  multiple shapes in `trace`; revisit `Sphere` owning a `Colour` when
+  materials arrive (the client currently describes a sphere as having a
+  colour); decide and test tangency and a ray starting inside a sphere;
+  replace `main`'s untested console output with an image; name the
+  black/background colour; decide colour-range and camera-input validation
+  with the client; and add non-unit direction cases to Sphere intersection
+  tests when the meaning of `t` becomes relevant.
 
 **Sources:**
 - **Starting point:** [LearnCpp.com](https://www.learncpp.com/) — A beginner-friendly tutorial covering C++ fundamentals, classes, pointers, memory management and good programming practices.
