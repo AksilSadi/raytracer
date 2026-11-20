@@ -1,7 +1,7 @@
-#include "camera.h"
-#include "colour.h"
+#include "colour/colour.h"
+#include "render/camera.h"
 #include "math/vector.h"
-#include "sphere.h"
+#include "geometry/sphere.h"
 
 #include <iostream>
 
