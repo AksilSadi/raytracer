@@ -73,7 +73,7 @@ GNU Make, CMake, Ninja, Git, and the GNU C++ compiler.
 ## Test-driven development
 
 Catch2 is the unit testing framework; CTest discovers and runs the test
-executable. The existing greeting test is a minimal example:
+executable. Use the tests in `tests/` as examples:
 
 1. **Red:** write a test for the behavior you want, then run `make test` and
    confirm it fails for the expected reason.
