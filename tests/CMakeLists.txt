@@ -5,6 +5,7 @@ add_executable(raytracer_tests
     geometry/test_sphere.cpp
     math/test_vector.cpp
     render/test_camera.cpp
+    render/test_trace.cpp
     test_helpers.cpp
 )
 target_include_directories(raytracer_tests PRIVATE
