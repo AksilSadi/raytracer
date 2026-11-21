@@ -173,22 +173,50 @@ One of the main challenges in C++ is memory management. Unlike languages that us
 
 ### Shaping the domain model
 
-The pinhole spike has established a small, tested domain model:
+The current, tested domain model is:
 
 ```mermaid
-flowchart LR
-    Camera -->|creates| Ray
-    Ray -->|input| Trace["trace(ray, sphere)"]
-    Sphere -->|input| Trace
-    Sphere -->|has| Colour
-    Trace -->|returns| Colour
-    Image -. "planned: stores pixel values" .-> Colour
+classDiagram
+    class Camera {
+        +rayThroughPixel(column, row, width, height) Ray
+        +render(sphere, width, height) Image
+    }
+    class Ray
+    class Sphere
+    class Colour
+    class Image {
+        +pixel(column, row) Colour
+        +setPixel(column, row, colour)
+    }
+    class Trace
+    class ImageSaver {
+        <<abstract>>
+        +save(image, path)
+    }
+    class PngSaver
+    class LodePNG
+
+    Camera ..> Ray : creates
+    Camera ..> Sphere : renders
+    Camera --> Image : returns
+    Camera ..> Trace : calls per pixel
+    Ray ..> Trace : input
+    Sphere ..> Trace : input
+    Sphere --> Colour : has
+    Trace --> Colour : returns
+    Image --> Colour : stores per pixel
+    PngSaver ..|> ImageSaver : implements
+    PngSaver ..> Image : reads
+    PngSaver ..> LodePNG : encodes with
 ```
 
-`Camera` creates a `Ray`; `Sphere` holds its geometry and a `Colour`; and the
-free function `trace` currently takes one ray and one sphere, returning the
-sphere's colour on a hit or black otherwise. `Image` is not implemented yet;
-it is expected to store `Colour` values for its pixels.
+`Camera` creates a ray through each pixel and renders an `Image` for one
+`Sphere`. The free function `trace` returns the sphere's `Colour` on a hit or
+black otherwise. `Image` stores a `Colour` for each pixel and exposes
+`pixel(column, row)`. `ImageSaver` defines the save contract; `PngSaver`
+implements it and uses LodePNG to write the image as a PNG. Saving belongs to
+a saver rather than `Image`, so the image model does not depend on a file
+format.
 
 The spike and stabilisation decisions are recorded here so they can be
 revisited deliberately:
@@ -196,18 +224,18 @@ revisited deliberately:
 - **Done:** the domain classes fit together; each class has tests; the
   behind-the-eye intersection bug is fixed; the colour decision is tested in
   `trace`; classes and tests are organized by concept; the greeting bootstrap
-  has been removed.
+  has been removed; `Camera` renders an image; and `PngSaver` writes it to a
+  PNG file.
 - **Rejected:** extracting the repeated camera ray from each test into another
   helper. Keeping the coordinates visible makes each test's setup easy to
   read.
 - **Parked:** return the nearest positive `t` instead of a yes/no hit; support
   multiple shapes in `trace`; revisit `Sphere` owning a `Colour` when
   materials arrive (the client currently describes a sphere as having a
-  colour); decide and test tangency and a ray starting inside a sphere;
-  replace `main`'s untested console output with an image; name the
-  black/background colour; decide colour-range and camera-input validation
-  with the client; and add non-unit direction cases to Sphere intersection
-  tests when the meaning of `t` becomes relevant.
+  colour); decide and test tangency and a ray starting inside a sphere; name
+  the black/background colour; decide colour-range and camera-input
+  validation with the client; and add non-unit direction cases to Sphere
+  intersection tests when the meaning of `t` becomes relevant.
 
 **Sources:**
 - **Starting point:** [LearnCpp.com](https://www.learncpp.com/) — A beginner-friendly tutorial covering C++ fundamentals, classes, pointers, memory management and good programming practices.
