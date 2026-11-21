@@ -40,6 +40,7 @@ target_link_libraries(raytracer PRIVATE raytracer_core)
 add_custom_target(run
     COMMAND $<TARGET_FILE:raytracer>
     DEPENDS raytracer
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     USES_TERMINAL
 )
 
