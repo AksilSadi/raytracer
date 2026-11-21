@@ -17,6 +17,20 @@ add_library(raytracer_core
 )
 target_include_directories(raytracer_core PUBLIC include src)
 
+include(FetchContent)
+
+FetchContent_Declare(
+    lodepng
+    GIT_REPOSITORY https://github.com/lvandeve/lodepng.git
+    GIT_TAG        7b2893e35891c0c85bee5595caafaf3c2044b409
+)
+FetchContent_MakeAvailable(lodepng)
+
+add_library(lodepng STATIC ${lodepng_SOURCE_DIR}/lodepng.cpp)
+target_include_directories(lodepng PUBLIC ${lodepng_SOURCE_DIR})
+
+target_link_libraries(raytracer_core PRIVATE lodepng)
+
 add_executable(raytracer
     src/main.cpp
 )
