@@ -42,3 +42,29 @@ TEST_CASE("camera creates a ray through the bottom-left pixel") {
     requireVectorsEqual(ray.origin(), Vector(0, 0, -1));
     requireVectorsEqual(ray.direction(), Vector(-2, -1, 1));
 }
+
+TEST_CASE("camera renders a red sphere as a plus") {
+    const Camera camera(Vector(0, 0, -1), Vector(0, 0, 0), 5);
+    const Sphere sphere(Vector(0, 0, 6), 5, Colour(1, 0, 0));
+    const Image image = camera.render(sphere, 5, 3);
+
+    CHECK(image.width() == 5);
+    CHECK(image.height() == 3);
+
+    for (int row = 0; row < 3; ++row) {
+        for (int column = 0; column < 5; ++column) {
+            const bool isRed =
+                (column == 2 && row == 0) ||
+                (column == 1 && row == 1) ||
+                (column == 2 && row == 1) ||
+                (column == 3 && row == 1) ||
+                (column == 2 && row == 2);
+
+            if (isRed) {
+                requireColoursEqual(image.pixel(column, row), Colour(1, 0, 0));
+            } else {
+                requireColoursEqual(image.pixel(column, row), Colour(0, 0, 0));
+            }
+        }
+    }
+}
