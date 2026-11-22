@@ -173,7 +173,7 @@ One of the main challenges in C++ is memory management. Unlike languages that us
 
 ### Shaping the domain model
 
-The current, tested domain model is:
+At the end of the spike and stabilisation, the tested domain model was:
 
 ```mermaid
 classDiagram
@@ -236,6 +236,20 @@ revisited deliberately:
   the black/background colour; decide colour-range and camera-input
   validation with the client; and add non-unit direction cases to Sphere
   intersection tests when the meaning of `t` becomes relevant.
+
+#### Tech lead review after adding the scene
+
+- **Fixed.** The sphere's exit hit now has a regression test for a ray starting
+  inside it. `Material::shade` documents that its inputs are unit vectors, and
+  `Scene` normalises the sun direction on construction.
+- **Parked.** Split camera projection from pixel traversal when traversal
+  needs to change independently. Revisit the light interface when a lamp is
+  needed, the material interface when a mirror is needed, and the repeated
+  material fields when a third shape is added.
+- **Kept.** Keep `Hit::point` and `Material::colour()` so tests can verify the
+  intersection point and identify the selected material. Keep the plane's exact
+  zero check for parallel rays and the explicit geometry in the tests so each
+  case shows its inputs.
 
 **Sources:**
 - **Starting point:** [LearnCpp.com](https://www.learncpp.com/) — A beginner-friendly tutorial covering C++ fundamentals, classes, pointers, memory management and good programming practices.

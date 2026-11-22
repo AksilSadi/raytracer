@@ -9,6 +9,12 @@
 #include <memory>
 #include <optional>
 
+TEST_CASE("scene normalises the light direction") {
+    const Scene scene(Vector(0, 3, -4));
+
+    requireVectorsEqual(scene.toLight(), Vector(0, 0.6, -0.8));
+}
+
 TEST_CASE("scene returns the nearer plane added second") {
     const Ray ray(Vector(0, 0, -1), Vector(0, 0, 1));
     Scene scene(Vector(0, 0, -1));

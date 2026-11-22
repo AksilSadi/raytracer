@@ -31,6 +31,18 @@ TEST_CASE("an off-centre sphere hit returns an outward unit normal") {
     requireVectorsEqual(hit->normal, Vector(-0.6, 0, -0.8));
 }
 
+TEST_CASE("a ray starting inside the sphere hits its exit surface") {
+    const Ray ray(Vector(0, 0, -1), Vector(0, 0, 1));
+    const Sphere sphere(Vector(0, 0, 1), 5, Material(Colour(1, 0, 0)));
+
+    const std::optional<Hit> hit = sphere.hit(ray);
+
+    REQUIRE(hit.has_value());
+    REQUIRE_THAT(hit->t, Catch::Matchers::WithinAbs(7, tolerance));
+    requireVectorsEqual(hit->point, Vector(0, 0, 6));
+    requireVectorsEqual(hit->normal, Vector(0, 0, 1));
+}
+
 TEST_CASE("sphere hit is empty when the ray misses") {
     const Ray ray(Vector(0, 0, -1), Vector(0, 0, 1));
     const Sphere sphere(Vector(6, 0, 9), 5, Material(Colour(1, 0, 0)));
