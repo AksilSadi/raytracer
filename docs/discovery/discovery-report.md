@@ -173,22 +173,44 @@ One of the main challenges in C++ is memory management. Unlike languages that us
 
 ### Shaping the domain model
 
-At the end of the spike and stabilisation, the tested domain model was:
-
 ```mermaid
 classDiagram
     class Camera {
         +rayThroughPixel(column, row, width, height) Ray
-        +render(sphere, width, height) Image
+        +render(scene, width, height) Image
     }
-    class Ray
+    class Ray {
+        +at(t) Vector
+    }
+    class Scene {
+        -Vector _toLight
+        +toLight() Vector
+        +add(shape)
+        +nearestHit(ray)
+    }
+    class Shape {
+        <<abstract>>
+        +hit(ray)
+    }
     class Sphere
+    class Plane
+    class Hit {
+        +double t
+        +Vector point
+        +Vector normal
+        +Material material
+    }
+    class Material {
+        +shade(normal, toLight) Colour
+    }
     class Colour
     class Image {
         +pixel(column, row) Colour
         +setPixel(column, row, colour)
     }
-    class Trace
+    class Trace {
+        <<function>>
+    }
     class ImageSaver {
         <<abstract>>
         +save(image, path)
@@ -197,45 +219,53 @@ classDiagram
     class LodePNG
 
     Camera ..> Ray : creates
-    Camera ..> Sphere : renders
-    Camera --> Image : returns
+    Camera ..> Scene : renders
+    Camera ..> Image : returns
     Camera ..> Trace : calls per pixel
-    Ray ..> Trace : input
-    Sphere ..> Trace : input
-    Sphere --> Colour : has
-    Trace --> Colour : returns
-    Image --> Colour : stores per pixel
+    Trace ..> Ray : takes
+    Trace ..> Scene : queries
+    Trace ..> Material : delegates shading
+    Trace ..> Colour : returns
+    Scene "1" *-- "0..*" Shape : owns
+    Scene ..> Hit : returns nearest
+    Shape <|-- Sphere
+    Shape <|-- Plane
+    Shape ..> Hit : returns on intersection
+    Sphere *-- "1" Material : has
+    Plane *-- "1" Material : has
+    Hit *-- "1" Material : carries
+    Material *-- "1" Colour : stores
+    Image *-- "0..*" Colour : stores per pixel
     PngSaver ..|> ImageSaver : implements
     PngSaver ..> Image : reads
     PngSaver ..> LodePNG : encodes with
 ```
 
-`Camera` creates a ray through each pixel and renders an `Image` for one
-`Sphere`. The free function `trace` returns the sphere's `Colour` on a hit or
-black otherwise. `Image` stores a `Colour` for each pixel and exposes
-`pixel(column, row)`. `ImageSaver` defines the save contract; `PngSaver`
-implements it and uses LodePNG to write the image as a PNG. Saving belongs to
-a saver rather than `Image`, so the image model does not depend on a file
-format.
+`Scene` owns zero or more `Shape` objects and stores the sun's unit direction
+`toLight`, which points towards the sun. `Sphere` and `Plane` implement
+`Shape::hit` and each holds a `Material`. A hit records the ray parameter
+`t`, the point, the unit surface normal and a copy of the shape's material.
+See [ADR 0010](../adr/0010-a-shape-has-a-material.md).
+
+`Camera` casts a ray through each pixel and calls the free function `trace`.
+`trace` asks the scene for the nearest forward hit and uses its material to
+shade it with the sun direction. A miss returns black. `Image` stores the
+resulting pixel colours. `PngSaver` implements the `ImageSaver` contract and
+uses LodePNG to write the image.
 
 The spike and stabilisation decisions are recorded here so they can be
 revisited deliberately:
 
-- **Done:** the domain classes fit together; each class has tests; the
-  behind-the-eye intersection bug is fixed; the colour decision is tested in
-  `trace`; classes and tests are organized by concept; the greeting bootstrap
-  has been removed; `Camera` renders an image; and `PngSaver` writes it to a
-  PNG file.
+- **Done.** Shapes report forward hits with their materials. The scene picks
+  the nearest hit across shapes, and the camera renders the shaded colours to
+  an image that `PngSaver` can write. Source and tests are organized by concept.
 - **Rejected:** extracting the repeated camera ray from each test into another
   helper. Keeping the coordinates visible makes each test's setup easy to
   read.
-- **Parked:** return the nearest positive `t` instead of a yes/no hit; support
-  multiple shapes in `trace`; revisit `Sphere` owning a `Colour` when
-  materials arrive (the client currently describes a sphere as having a
-  colour); decide and test tangency and a ray starting inside a sphere; name
-  the black/background colour; decide colour-range and camera-input
-  validation with the client; and add non-unit direction cases to Sphere
-  intersection tests when the meaning of `t` becomes relevant.
+- **Parked.** Decide and test sphere tangency, name the black background
+  colour, and discuss colour-range and camera-input validation with the
+  client. Add non-unit direction cases to the sphere intersection tests
+  when the meaning of `t` becomes relevant.
 
 #### Tech lead review after adding the scene
 
