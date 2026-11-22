@@ -1,3 +1,4 @@
+#include "material/material.h"
 #include "render/trace.h"
 #include "test_helpers.h"
 
@@ -5,7 +6,7 @@
 
 TEST_CASE("trace returns the sphere colour when the ray hits") {
     const Ray ray(Vector(0, 0, -1), Vector(0, 0, 1));
-    const Sphere sphere(Vector(0, 0, 9), 5, Colour(1, 0, 0));
+    const Sphere sphere(Vector(0, 0, 9), 5, Material(Colour(1, 0, 0)));
 
     const Colour pixel = trace(ray, sphere);
 
@@ -14,7 +15,7 @@ TEST_CASE("trace returns the sphere colour when the ray hits") {
 
 TEST_CASE("trace returns black when the ray misses") {
     const Ray ray(Vector(0, 0, -1), Vector(0, 0, 1));
-    const Sphere sphere(Vector(6, 0, 9), 5, Colour(1, 0, 0));
+    const Sphere sphere(Vector(6, 0, 9), 5, Material(Colour(1, 0, 0)));
 
     const Colour pixel = trace(ray, sphere);
 

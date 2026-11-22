@@ -1,3 +1,4 @@
+#include "material/material.h"
 #include "render/camera.h"
 #include "test_helpers.h"
 
@@ -45,7 +46,7 @@ TEST_CASE("camera creates a ray through the bottom-left pixel") {
 
 TEST_CASE("camera renders a red sphere as a plus") {
     const Camera camera(Vector(0, 0, -1), Vector(0, 0, 0), 5);
-    const Sphere sphere(Vector(0, 0, 6), 5, Colour(1, 0, 0));
+    const Sphere sphere(Vector(0, 0, 6), 5, Material(Colour(1, 0, 0)));
     const Image image = camera.render(sphere, 5, 3);
 
     CHECK(image.width() == 5);
