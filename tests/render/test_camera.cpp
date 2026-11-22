@@ -1,8 +1,11 @@
+#include "geometry/sphere.h"
 #include "material/material.h"
 #include "render/camera.h"
+#include "scene/scene.h"
 #include "test_helpers.h"
 
 #include <catch2/catch_test_macros.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -48,8 +51,9 @@ TEST_CASE("camera creates a ray through the bottom-left pixel") {
 
 TEST_CASE("camera renders a red sphere as a shaded plus") {
     const Camera camera(Vector(0, 0, -1), Vector(0, 0, 0), 5);
-    const Sphere sphere(Vector(0, 0, 6), 5, Material(Colour(1, 0, 0)));
-    const Image image = camera.render(sphere, Vector(0, 0, -1), 5, 3);
+    Scene scene(Vector(0, 0, -1));
+    scene.add(std::make_unique<Sphere>(Vector(0, 0, 6), 5, Material(Colour(1, 0, 0))));
+    const Image image = camera.render(scene, 5, 3);
 
     CHECK(image.width() == 5);
     CHECK(image.height() == 3);
