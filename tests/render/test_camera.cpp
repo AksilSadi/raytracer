@@ -3,6 +3,8 @@
 #include "test_helpers.h"
 
 #include <catch2/catch_test_macros.hpp>
+#include <string>
+#include <vector>
 
 TEST_CASE("camera creates a ray through the centre of its screen") {
     const Camera camera(Vector(0, 0, -1), Vector(0, 0, 0), 2);
@@ -44,28 +46,28 @@ TEST_CASE("camera creates a ray through the bottom-left pixel") {
     requireVectorsEqual(ray.direction(), Vector(-2, -1, 1));
 }
 
-TEST_CASE("camera renders a red sphere as a plus") {
+TEST_CASE("camera renders a red sphere as a shaded plus") {
     const Camera camera(Vector(0, 0, -1), Vector(0, 0, 0), 5);
     const Sphere sphere(Vector(0, 0, 6), 5, Material(Colour(1, 0, 0)));
-    const Image image = camera.render(sphere, 5, 3);
+    const Image image = camera.render(sphere, Vector(0, 0, -1), 5, 3);
 
     CHECK(image.width() == 5);
     CHECK(image.height() == 3);
 
+    const std::vector<std::string> expected = {
+        "..#..",
+        ".#O#.",
+        "..#..",
+    };
     for (int row = 0; row < 3; ++row) {
         for (int column = 0; column < 5; ++column) {
-            const bool isRed =
-                (column == 2 && row == 0) ||
-                (column == 1 && row == 1) ||
-                (column == 2 && row == 1) ||
-                (column == 3 && row == 1) ||
-                (column == 2 && row == 2);
-
-            if (isRed) {
-                requireColoursEqual(image.pixel(column, row), Colour(1, 0, 0));
-            } else {
-                requireColoursEqual(image.pixel(column, row), Colour(0, 0, 0));
+            double red = 0.0;
+            if (expected[row][column] == 'O') {
+                red = 1.0;
+            } else if (expected[row][column] == '#') {
+                red = 0.8;
             }
+            requireColoursEqual(image.pixel(column, row), Colour(red, 0, 0));
         }
     }
 }
